@@ -5,80 +5,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng điều khiển - Bản sao Google Classroom</title>
+    <title>Bảng điều khiển - Classroom</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f1f3f4;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f1f3f4;
+            line-height: 1.6;
+        }
+
         .container {
             display: flex;
+            min-height: 100vh;
         }
-        .sidebar {
-            width: 240px;
-            height: 100vh;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
-            position: fixed;
-            left: -240px;
-            transition: left 0.3s ease;
-            z-index: 1000;
-        }
-        .sidebar.open {
-            left: 0;
-        }
-        .sidebar h2 {
-            font-size: 16px;
-            color: #5f6368;
-            margin-bottom: 16px;
-        }
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .sidebar li {
-            margin-bottom: 12px;
-        }
-        .sidebar a {
-            text-decoration: none;
-            color: #3c4043;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            border-radius: 0 20px 20px 0;
-        }
-        .sidebar a:hover {
-            background-color: #f1f3f4;
-        }
-        .sidebar a i {
-            margin-right: 12px;
-        }
+
         .main-content {
             flex-grow: 1;
             padding: 24px 32px;
             margin-left: 60px;
+            transition: margin-left 0.3s ease;
         }
-        .main-content h1 {
+
+        .main-content.sidebar-open {
+            margin-left: 300px;
+        }
+
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 60px;
+            right: 0;
+            background-color: #f1f3f4;
+            padding: 24px 32px;
+            z-index: 999;
+            transition: left 0.3s ease;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .main-header.sidebar-open {
+            left: 300px;
+        }
+
+        .main-header h1 {
             font-size: 24px;
             color: #3c4043;
             margin-bottom: 16px;
         }
+
         .class-grid {
+            margin-top: 100px;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
+
         .class-card {
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
             overflow: hidden;
+            transition: box-shadow 0.3s ease;
         }
+
+        .class-card:hover {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
         .class-header {
             height: 100px;
             background-color: #1aa260;
@@ -86,24 +84,47 @@
             padding: 16px;
             position: relative;
         }
+
         .class-title {
             font-size: 24px;
             margin: 0;
+            font-weight: 500;
         }
+
         .class-section {
             font-size: 14px;
             margin-top: 4px;
+            opacity: 0.9;
         }
+
         .class-menu {
             position: absolute;
             top: 12px;
             right: 12px;
             color: white;
             cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
         }
+
+        .class-menu:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
         .class-body {
             padding: 16px;
         }
+
+        .class-body a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .class-body a:hover {
+            text-decoration: underline;
+        }
+
         .add-class-btn {
             background-color: #1a73e8;
             color: white;
@@ -117,44 +138,18 @@
             align-items: center;
             margin-bottom: 20px;
             box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+            transition: background-color 0.3s ease;
         }
+
+        .add-class-btn:hover {
+            background-color: #1557b0;
+        }
+
         .add-class-btn .material-icons {
             margin-right: 8px;
             font-size: 20px;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 8px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+
         .menu-toggle {
             position: fixed;
             top: 10px;
@@ -164,6 +159,13 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            color: #5f6368;
+        }
+
+        .menu-toggle:hover {
+            background-color: rgba(95,99,104,0.1);
         }
     </style>
 </head>
@@ -173,20 +175,16 @@
     </button>
     
     <div class="container">
-        <div class="sidebar" id="sidebar">
-            <h2>Menu</h2>
-            <ul>
-                <li><a href="dashboard"><i class="material-icons">dashboard</i>Bảng điều khiển</a></li>
-                <li><a href="calendar"><i class="material-icons">calendar_today</i>Lịch</a></li>
-                <li><a href="todo"><i class="material-icons">check_circle</i>Việc cần làm</a></li>
-            </ul>
-        </div>
-        <div class="main-content">
-            <h1>Lớp học của tôi</h1>
-            <button class="add-class-btn" onclick="openModal()">
-                <i class="material-icons">add</i>
-                <span>Tạo lớp học</span>
-            </button>
+        <%@ include file="menu.jsp" %>
+
+        <div class="main-content" id="mainContent">
+            <div class="main-header" id="mainHeader">
+                <h1>Lớp học của tôi</h1>
+                <button class="add-class-btn" onclick="openModal()">
+                    <i class="material-icons">add</i>
+                    <span>Tạo lớp học</span>
+                </button>
+            </div>
             <div class="class-grid">
                 <c:forEach items="${classrooms}" var="classroom">
                     <div class="class-card">
@@ -205,24 +203,7 @@
         </div>
     </div>
 
-    <!-- Modal để tạo lớp học mới -->
-    <div id="createClassModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Tạo lớp học mới</h2>
-            <form action="createClass" method="POST">
-                <label for="className">Tên lớp học:</label>
-                <input type="text" id="className" name="className" required><br><br>
-                <label for="section">Phần:</label>
-                <input type="text" id="section" name="section"><br><br>
-                <label for="subject">Môn học:</label>
-                <input type="text" id="subject" name="subject"><br><br>
-                <label for="description">Mô tả:</label>
-                <textarea id="description" name="description"></textarea><br><br>
-                <input type="submit" value="Tạo lớp học">
-            </form>
-        </div>
-    </div>
+    <%@ include file="createclass.jsp" %>
 
     <script>
         function openModal() {
@@ -233,16 +214,20 @@
             document.getElementById('createClassModal').style.display = 'none';
         }
 
-        // Đóng modal nếu người dùng nhấp chuột bên ngoài
         window.onclick = function(event) {
             if (event.target == document.getElementById('createClassModal')) {
                 closeModal();
             }
         }
 
-        // Chuyển đổi thanh bên
         document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('open');
+            var sidebar = document.getElementById('sidebar');
+            var mainContent = document.getElementById('mainContent');
+            var mainHeader = document.getElementById('mainHeader');
+            
+            sidebar.classList.toggle('open');
+            mainContent.classList.toggle('sidebar-open');
+            mainHeader.classList.toggle('sidebar-open');
         });
     </script>
 </body>
