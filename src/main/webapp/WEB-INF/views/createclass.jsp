@@ -121,15 +121,15 @@
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
         <h2>Tạo lớp học mới</h2>
-        <form action="createClass" method="POST">
+        <form id="createClassForm">
             <div class="form-group">
                 <label for="className">Tên lớp học</label>
-                <input type="text" id="className" name="className" required>
+                <input type="text" id="className" name="name" required>
             </div>
             
             <div class="form-group">
                 <label for="subject">Môn học</label>
-                <input type="text" id="subject" name="subject">
+                <input type="text" id="subject" name="subject" required>
             </div>
             
             <div class="form-group">
@@ -140,4 +140,4 @@
             <button type="submit" class="submit-btn">Tạo lớp học</button>
         </form>
     </div>
-</div>
+</div>  

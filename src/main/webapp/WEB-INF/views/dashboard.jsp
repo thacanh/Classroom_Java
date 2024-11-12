@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bảng điều khiển - Classroom</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -30,6 +31,7 @@
             padding: 24px 32px;
             margin-left: 60px;
             transition: margin-left 0.3s ease;
+            padding-top: 120px;
         }
 
         .main-content.sidebar-open {
@@ -58,73 +60,6 @@
             margin-bottom: 16px;
         }
 
-        .class-grid {
-            margin-top: 100px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .class-card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
-            overflow: hidden;
-            transition: box-shadow 0.3s ease;
-        }
-
-        .class-card:hover {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .class-header {
-            height: 100px;
-            background-color: #1aa260;
-            color: white;
-            padding: 16px;
-            position: relative;
-        }
-
-        .class-title {
-            font-size: 24px;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .class-section {
-            font-size: 14px;
-            margin-top: 4px;
-            opacity: 0.9;
-        }
-
-        .class-menu {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            color: white;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-        }
-
-        .class-menu:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .class-body {
-            padding: 16px;
-        }
-
-        .class-body a {
-            color: #1a73e8;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .class-body a:hover {
-            text-decoration: underline;
-        }
-
         .add-class-btn {
             background-color: #1a73e8;
             color: white;
@@ -138,11 +73,12 @@
             align-items: center;
             margin-bottom: 20px;
             box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .add-class-btn:hover {
             background-color: #1557b0;
+            box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
         }
 
         .add-class-btn .material-icons {
@@ -162,6 +98,7 @@
             padding: 8px;
             border-radius: 50%;
             color: #5f6368;
+            transition: background-color 0.3s ease;
         }
 
         .menu-toggle:hover {
@@ -185,21 +122,7 @@
                     <span>Tạo lớp học</span>
                 </button>
             </div>
-            <div class="class-grid">
-                <c:forEach items="${classrooms}" var="classroom">
-                    <div class="class-card">
-                        <div class="class-header">
-                            <h2 class="class-title">${classroom.className}</h2>
-                            <p class="class-section">${classroom.section}</p>
-                            <i class="material-icons class-menu">more_vert</i>
-                        </div>
-                        <div class="class-body">
-                            <p>${classroom.description}</p>
-                            <a href="classroom?id=${classroom.id}">Xem lớp học</a>
-                        </div>
-                    </div>
-                </c:forEach>
-            </div>
+            <%@ include file="dashboard_class.jsp" %>
         </div>
     </div>
 
@@ -224,10 +147,65 @@
             var sidebar = document.getElementById('sidebar');
             var mainContent = document.getElementById('mainContent');
             var mainHeader = document.getElementById('mainHeader');
-            
+
             sidebar.classList.toggle('open');
             mainContent.classList.toggle('sidebar-open');
             mainHeader.classList.toggle('sidebar-open');
+        });
+
+        // Xử lý form submission
+        document.getElementById('createClassForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('createClass', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                console.log('Server response:', data);
+
+                if (data.success) {
+                    // Tạo element mới sử dụng dữ liệu từ form
+                    const newCard = document.createElement('div');
+                    newCard.className = 'class-card';
+                    newCard.innerHTML = `
+                        <div class="class-header">
+                            <h2 class="class-title">${formData.get('name')}</h2>
+                            <p class="class-section">${formData.get('subject')}</p>
+                            <i class="material-icons class-menu">more_vert</i>
+                        </div>
+                        <div class="class-body">
+                            <p>${formData.get('description')}</p>
+                            <a href="classroom?id=${data.classroom.id}">Xem lớp học</a>
+                        </div>
+                    `;
+
+                    // Thêm vào đầu danh sách
+                    const classGrid = document.querySelector('.class-grid');
+                    if (classGrid.firstChild) {
+                        classGrid.insertBefore(newCard, classGrid.firstChild);
+                    } else {
+                        classGrid.appendChild(newCard);
+                    }
+
+                    // Đóng modal và reset form
+                    closeModal();
+                    this.reset();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra khi tạo lớp học!');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi tạo lớp học!');
+            }
         });
     </script>
 </body>
