@@ -4,7 +4,6 @@ import com.classroom.dao.ClassroomDAO;
 import com.classroom.model.Classroom;
 import com.classroom.model.User;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;

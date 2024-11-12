@@ -1,4 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.classroom.model.User" %>
+<%
+    User user = (User) session.getAttribute("user");
+    String username = (user != null) ? user.getUsername() : "Guest"; // Nếu không có user thì hiển thị "Guest"
+%>
 <style>
     .sidebar {
         width: 240px;
@@ -53,8 +58,9 @@
 
 <div class="sidebar" id="sidebar">
     <ul>
+        <li><span>Xin chào, <strong><%= username %></strong></span></li>
         <li><a href="dashboard" class="active"><i class="material-icons">dashboard</i>Bảng điều khiển</a></li>
         <li><a href="calendar"><i class="material-icons">calendar_today</i>Lịch</a></li>
-        <li><a href="todo"><i class="material-icons">check_circle</i>Việc cần làm</a></li>
+        <li><a href="#" onclick="window.location.href='login';"><i class="material-icons">logout</i>Đăng xuất</a></li>
     </ul>
 </div>

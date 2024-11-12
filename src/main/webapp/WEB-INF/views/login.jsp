@@ -84,16 +84,16 @@
         <% } %>
         <form action="login" method="post">
             <div class="form-group">
-                <input type="text" name="username" placeholder="Username" required>
+                <input type="text" name="username" placeholder="Tài khoản" required>
             </div>
             <div class="form-group">
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password" placeholder="Mật khẩu" required>
             </div>
-            <button type="submit" class="login-btn">Login</button>
+            <button type="submit" class="login-btn">Đăng nhập</button>
         </form>
 
         <div class="register-link">
-            <p>Don't have an account? <a href="register">Register here</a></p>
+            <p>Bạn chưa có tài khoản? <a href="register">Đăng ký tại đây</a></p>
         </div>
     </div>
 </body>

@@ -1,26 +1,34 @@
 package com.classroom.model;
 
 public class Classroom {
-    private int id;
+    private String id;           
     private String name;
     private String subject;
     private String description;
+    private int creatorId;       
 
     public Classroom() {}
 
-    public Classroom(int id, String name, String subject, String description) {
+    public Classroom(String id, String name, String subject, String description, int creatorId) {
         this.id = id;
         this.name = name;
         this.subject = subject;
         this.description = description;
+        this.creatorId = creatorId;
     }
 
-    // Getters and setters
-    public int getId() {
+    public Classroom(String name, String subject, String description, int creatorId) {
+        this.name = name;
+        this.subject = subject;
+        this.description = description;
+        this.creatorId = creatorId;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -46,5 +54,13 @@ public class Classroom {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(int creatorId) {
+        this.creatorId = creatorId;
     }
 }

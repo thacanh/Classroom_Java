@@ -35,13 +35,13 @@ public class LoginServlet extends HttpServlet {
                 request.getSession().setAttribute("user", user); // Lưu user vào session
                 response.sendRedirect("dashboard"); // Chuyển hướng đến Dashboard
             } else {
-                // Nếu sai, hiển thị lỗi và forward lại về trang đăng nhập
-                request.setAttribute("error", "Invalid username or password");
+                // Nếu sai, hiển thị lỗi và chuyển lại về trang đăng nhập
+                request.setAttribute("error", "Tên đăng nhập hoặc mật khẩu không hợp lệ");
                 request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
             }
         } catch (Exception e) {
             // Xử lý lỗi khi không thể xác thực người dùng
-            request.setAttribute("error", "An error occurred during authentication");
+            request.setAttribute("error", "Đã xảy ra lỗi khi xác thực");
             request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
         }
     }

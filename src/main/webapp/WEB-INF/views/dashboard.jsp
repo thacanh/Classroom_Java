@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng điều khiển - Classroom</title>
+    <title>Classroom</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -60,8 +60,12 @@
             margin-bottom: 16px;
         }
 
-        .add-class-btn {
-            background-color: #1a73e8;
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-class-btn, .join-class-btn {
             color: white;
             border: none;
             padding: 8px 24px;
@@ -71,9 +75,12 @@
             font-weight: 500;
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
             box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .add-class-btn {
+            background-color: #1a73e8;
         }
 
         .add-class-btn:hover {
@@ -81,7 +88,16 @@
             box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
         }
 
-        .add-class-btn .material-icons {
+        .join-class-btn {
+            background-color: #34a853;
+        }
+
+        .join-class-btn:hover {
+            background-color: #2d8e47;
+            box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+        }
+
+        .add-class-btn .material-icons, .join-class-btn .material-icons {
             margin-right: 8px;
             font-size: 20px;
         }
@@ -117,16 +133,23 @@
         <div class="main-content" id="mainContent">
             <div class="main-header" id="mainHeader">
                 <h1>Lớp học của tôi</h1>
-                <button class="add-class-btn" onclick="openModal()">
-                    <i class="material-icons">add</i>
-                    <span>Tạo lớp học</span>
-                </button>
+                <div class="header-buttons">
+                    <button class="add-class-btn" onclick="openModal()">
+                        <i class="material-icons">add</i>
+                        <span>Tạo lớp học</span>
+                    </button>
+                    <button class="join-class-btn" onclick="openJoinModal()">
+                        <i class="material-icons">group_add</i>
+                        <span>Tham gia lớp học</span>
+                    </button>
+                </div>
             </div>
             <%@ include file="dashboard_class.jsp" %>
         </div>
     </div>
 
     <%@ include file="createclass.jsp" %>
+    <%@ include file="joinclass.jsp" %>
 
     <script>
         function openModal() {
@@ -137,9 +160,20 @@
             document.getElementById('createClassModal').style.display = 'none';
         }
 
+        function openJoinModal() {
+            document.getElementById('joinClassModal').style.display = 'block';
+        }
+
+        function closeJoinModal() {
+            document.getElementById('joinClassModal').style.display = 'none';
+        }
+
         window.onclick = function(event) {
             if (event.target == document.getElementById('createClassModal')) {
                 closeModal();
+            }
+            if (event.target == document.getElementById('joinClassModal')) {
+                closeJoinModal();
             }
         }
 
@@ -153,7 +187,7 @@
             mainHeader.classList.toggle('sidebar-open');
         });
 
-        // Xử lý form submission
+        // Xử lý form tạo lớp học
         document.getElementById('createClassForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
@@ -184,7 +218,7 @@
                         </div>
                         <div class="class-body">
                             <p>${formData.get('description')}</p>
-                            <a href="classroom?id=${data.classroom.id}">Xem lớp học</a>
+                            <a href="classroom?id=${data.classroom.id}">Xem lớp học ${data.classroom.id}</a>
                         </div>
                     `;
 
@@ -199,12 +233,48 @@
                     // Đóng modal và reset form
                     closeModal();
                     this.reset();
+                    window.location.reload();
                 } else {
                     alert(data.message || 'Có lỗi xảy ra khi tạo lớp học!');
                 }
             } catch (error) {
                 console.error('Error:', error);
                 alert('Có lỗi xảy ra khi tạo lớp học!');
+            }
+        });
+
+        // Xử lý form tham gia lớp học
+        document.getElementById('joinClassForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('joinClass', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                console.log('Server response:', data);
+
+                if (data.success) {
+                    // Đóng modal và reset form
+                    closeJoinModal();
+                    this.reset();
+                    // Có thể thêm thông báo thành công hoặc chuyển hướng người dùng
+                    alert('Tham gia lớp học thành công!');
+                    // window.location.href = 'classroom?id=' + data.classId; // Chuyển hướng đến trang lớp học
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra khi tham gia lớp học!');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi tham gia lớp học!');
             }
         });
     </script>

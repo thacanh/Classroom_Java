@@ -78,22 +78,22 @@
 
         <form action="register" method="post">
             <div class="form-group">
-                <input type="text" name="username" placeholder="Username" required>
+                <input type="text" name="username" placeholder="Tài khoản" required>
             </div>
             <div class="form-group">
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password" placeholder="Mật khẩu" required>
             </div>
             <div class="form-group">
-                <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+                <input type="password" name="confirmPassword" placeholder="Xác nhận mật khẩu" required>
             </div>
             <div class="form-group">
-                <input type="email" name="email" placeholder="Email (optional)">
+                <input type="email" name="email" placeholder="Email">
             </div>
             <button type="submit" class="register-btn">Register</button>
         </form>
 
         <div class="register-link">
-            <p>Already have an account? <a href="login">Login here</a></p>
+            <p>Bạn đã có tài khoản? <a href="login">Đăng nhập ngay</a></p>
         </div>
     </div>
 </body>

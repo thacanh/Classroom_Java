@@ -2,12 +2,14 @@ package com.classroom.controller;
 
 import com.classroom.model.Classroom;
 import com.classroom.dao.ClassroomDAO;
+import com.classroom.model.User;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -26,41 +28,43 @@ public class CreateClassServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            request.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-            // Lấy thông tin từ request
+        PrintWriter out = response.getWriter();
+
+        try {
+            HttpSession session = request.getSession();
+            User currentUser = (User) session.getAttribute("user");
+
+            if (currentUser == null) {
+                sendErrorResponse(response, "Người dùng chưa đăng nhập");
+                return;
+            }
+
             String name = request.getParameter("name");
             String subject = request.getParameter("subject");
             String description = request.getParameter("description");
 
-            // Log để debug
             System.out.println("Received request - Name: " + name + ", Subject: " + subject);
 
-            // Validate input
-            if (name == null || name.trim().isEmpty()) {
-                sendErrorResponse(response, "Tên lớp học không được để trống");
+            if (name == null || name.trim().isEmpty() || subject == null || subject.trim().isEmpty()) {
+                sendErrorResponse(response, "Tên lớp học và môn học không được để trống");
                 return;
             }
 
-            // Create new classroom
             Classroom classroom = new Classroom();
             classroom.setName(name);
             classroom.setSubject(subject);
             classroom.setDescription(description);
+            classroom.setCreatorId(currentUser.getId());
 
-            // Save to database
             Classroom savedClassroom = classroomDAO.createClassroom(classroom);
 
             if (savedClassroom != null) {
-                // Success response
                 ResponseData responseData = new ResponseData(true, savedClassroom, null);
-                String jsonResponse = gson.toJson(responseData);
-                PrintWriter out = response.getWriter();
-                out.print(jsonResponse);
-                out.flush();
+                out.print(gson.toJson(responseData));
             } else {
                 sendErrorResponse(response, "Không thể tạo lớp học");
             }
@@ -68,15 +72,17 @@ public class CreateClassServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             sendErrorResponse(response, "Lỗi khi tạo lớp học: " + e.getMessage());
+        } finally {
+            out.flush();
+            out.close();
         }
     }
 
     private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         ResponseData responseData = new ResponseData(false, null, message);
-        String jsonResponse = gson.toJson(responseData);
         PrintWriter out = response.getWriter();
-        out.print(jsonResponse);
+        out.print(gson.toJson(responseData));
         out.flush();
     }
 

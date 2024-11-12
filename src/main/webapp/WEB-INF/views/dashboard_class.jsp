@@ -62,29 +62,52 @@
     }
 
     .class-body {
-        padding: 16px;
-        flex-grow: 1;
+        padding: 12px 16px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-start;
+        flex-grow: 1;
     }
 
     .class-body p {
-        margin-bottom: 12px;
+        margin-bottom: 8px;
         word-wrap: break-word;
+        max-height: 60px;
+        overflow-y: auto;
+        flex-grow: 1;
     }
 
     .class-body a {
         color: #1a73e8;
+        background-color: #f0f0f0;
+        padding: 4px 8px;
         text-decoration: none;
         font-weight: 500;
-        transition: color 0.3s ease;
-        align-self: flex-start;
+        border-radius: 4px;
+        transition: color 0.3s ease, background-color 0.3s ease;
+        font-size: 14px;
+        margin-right: 8px;
     }
 
     .class-body a:hover {
         color: #174ea6;
+        background-color: #e0e0e0;
         text-decoration: underline;
+    }
+
+    .class-footer {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-top: 8px;
+    }
+
+    .class-id {
+        text-align: right;
+        font-weight: bold;
+        font-size: 18px;
+        margin: 0;
+        margin-left: auto;
     }
 </style>
 
@@ -98,7 +121,10 @@
             </div>
             <div class="class-body">
                 <p>${classroom.description}</p>
-                <a href="classroom?id=${classroom.id}">Xem lớp học</a>
+                <div class="class-footer">
+                    <a href="classroom?id=${classroom.id}">Xem lớp học</a>
+                    <div class="class-id">${classroom.id}</div>
+                </div>
             </div>
         </div>
     </c:forEach>
