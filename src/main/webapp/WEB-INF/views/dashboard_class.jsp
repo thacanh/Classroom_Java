@@ -117,7 +117,7 @@
             <div class="class-header">
                 <h2 class="class-title">${classroom.name}</h2>
                 <p class="class-section">${classroom.subject}</p>
-                <i class="material-icons class-menu">more_vert</i>
+                <i class="material-icons class-menu" onclick="deleteClass('${classroom.id}')">close</i>
             </div>
             <div class="class-body">
                 <p>${classroom.description}</p>
@@ -129,3 +129,29 @@
         </div>
     </c:forEach>
 </div>
+<script>
+function deleteClass(classId) {
+    if (confirm('Bạn có chắc chắn muốn xóa lớp học này?')) {
+        fetch('deleteClassroom', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'id=' + classId
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Xóa lớp học thành công!');
+                location.reload(); // Tải lại trang sau khi xóa
+            } else {
+                alert('Không thể xóa lớp học: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi xóa lớp học');
+        });
+    }
+}
+</script>

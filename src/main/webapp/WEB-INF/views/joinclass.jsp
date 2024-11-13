@@ -5,6 +5,8 @@
         <h2>Tham gia lớp học</h2>
         <form id="joinClassForm">
             <div class="form-group">
+                <label for="nickName">Biệt danh:</label>
+                <input type="text" id="nickName" name="nickName" required>
                 <label for="classId">Mã lớp học:</label>
                 <input type="text" id="classId" name="classId" required>
             </div>

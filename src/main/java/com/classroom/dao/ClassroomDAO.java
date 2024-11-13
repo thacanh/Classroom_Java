@@ -131,20 +131,6 @@ public class ClassroomDAO {
         }
     }
 
-    // Xóa lớp học theo ID
-    public boolean deleteClassroom(String id) throws SQLException {
-        String sql = "DELETE FROM classrooms WHERE id = ?";
-        
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setString(1, id);
-            
-            int affectedRows = stmt.executeUpdate();
-            return affectedRows > 0;
-        }
-    }
-    
     // Kiểm tra xem sinh viên có đang tham gia lớp học không
     public boolean isUserInClassroom(int studentId, String classroomId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM class_enrollments WHERE student_id = ? AND classroom_id = ?";
@@ -230,5 +216,64 @@ public class ClassroomDAO {
             }
         }
         return classrooms;
+    }
+    
+    public boolean isClassroomCreator(int userId, String classroomId) throws SQLException {
+    String sql = "SELECT creator_id FROM classrooms WHERE id = ?";
+    
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setString(1, classroomId);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("creator_id") == userId;
+            }
+        }
+    }
+    return false;
+    }
+    public boolean deleteClassroom(String classroomId) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            // Xóa các enrollment trước
+            String deleteEnrollments = "DELETE FROM class_enrollments WHERE classroom_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(deleteEnrollments)) {
+                stmt.setString(1, classroomId);
+                stmt.executeUpdate();
+            }
+
+            // Sau đó xóa lớp học
+            String deleteClassroom = "DELETE FROM classrooms WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(deleteClassroom)) {
+                stmt.setString(1, classroomId);
+                int result = stmt.executeUpdate();
+
+                conn.commit();
+                return result > 0;
+            }
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw e;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
