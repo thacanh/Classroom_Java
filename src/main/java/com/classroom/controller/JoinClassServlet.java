@@ -42,12 +42,22 @@ public class JoinClassServlet extends HttpServlet {
                 return;
             }
 
-            // Lấy mã lớp học từ request
+            // Lấy mã lớp học và nickname từ request
             String classroomId = request.getParameter("classId");
+            String nickname = request.getParameter("nickName");
 
+            // Kiểm tra mã lớp học
             if (classroomId == null || classroomId.trim().isEmpty()) {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Mã lớp học không hợp lệ!");
+                out.print(jsonResponse.toString());
+                return;
+            }
+
+            // Kiểm tra nickname
+            if (nickname == null || nickname.trim().isEmpty()) {
+                jsonResponse.addProperty("success", false);
+                jsonResponse.addProperty("message", "Nickname không được để trống!");
                 out.print(jsonResponse.toString());
                 return;
             }
@@ -70,8 +80,8 @@ public class JoinClassServlet extends HttpServlet {
                 return;
             }
 
-            // Thêm người dùng vào lớp học
-            boolean success = classroomDAO.addUserToClassroom(currentUser.getId(), classroomId);
+            // Thêm người dùng vào lớp học với nickname
+            boolean success = classroomDAO.addUserToClassroom(currentUser.getId(), classroomId, nickname);
 
             if (success) {
                 jsonResponse.addProperty("success", true);

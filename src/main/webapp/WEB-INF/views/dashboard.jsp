@@ -88,10 +88,6 @@
             box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
         }
 
-        .join-class-btn {
-            background-color: #34a853;
-        }
-
         .join-class-btn:hover {
             background-color: #2d8e47;
             box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
@@ -138,7 +134,7 @@
                         <i class="material-icons">add</i>
                         <span>Tạo lớp học</span>
                     </button>
-                    <button class="join-class-btn" onclick="openJoinModal()">
+                    <button class="add-class-btn" onclick="openJoinModal()">
                         <i class="material-icons">group_add</i>
                         <span>Tham gia lớp học</span>
                     </button>

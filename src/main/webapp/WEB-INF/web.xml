@@ -5,8 +5,16 @@
         <servlet-class>com.classroom.controller.LoginServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ClassroomServlet</servlet-name>
+        <servlet-class>com.classroom.controller.ClassroomServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>com.classroom.controller.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DashboardServlet</servlet-name>
+        <servlet-class>com.classroom.controller.DashboardServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>JoinClassServlet</servlet-name>
@@ -25,13 +33,13 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>ClassroomServlet</servlet-name>
+        <url-pattern>/classroom</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/register</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>DashboardServlet</servlet-name>
-        <servlet-class>com.classroom.controller.DashboardServlet</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>DashboardServlet</servlet-name>
         <url-pattern>/dashboard</url-pattern>

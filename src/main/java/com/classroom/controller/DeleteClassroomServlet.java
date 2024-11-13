@@ -34,12 +34,6 @@ public class DeleteClassroomServlet extends HttpServlet {
         try {
             HttpSession session = request.getSession();
             User currentUser = (User) session.getAttribute("user");
-
-            if (currentUser == null) {
-                sendErrorResponse(response, "Người dùng chưa đăng nhập");
-                return;
-            }
-
             String classroomId = request.getParameter("id");
             
             // Kiểm tra xem người dùng có phải là người tạo lớp học không
@@ -82,8 +76,6 @@ public class DeleteClassroomServlet extends HttpServlet {
             this.success = success;
             this.message = message;
         }
-
-        // Getters
         public boolean isSuccess() { return success; }
         public String getMessage() { return message; }
     }

@@ -1,6 +1,7 @@
 package com.classroom.dao;
 
 import com.classroom.model.Classroom;
+import com.classroom.model.ClassEnrollment;
 import com.classroom.util.DBConnection;
 import java.util.Random;
 import java.sql.*;
@@ -150,15 +151,16 @@ public class ClassroomDAO {
         return false;
     }
 
-    // Thêm sinh viên vào lớp học
-    public boolean addUserToClassroom(int studentId, String classroomId) throws SQLException {
-        String sql = "INSERT INTO class_enrollments (student_id, classroom_id) VALUES (?, ?)";
+    // Thêm sinh viên vào lớp học với nickname
+    public boolean addUserToClassroom(int studentId, String classroomId, String nickname) throws SQLException {
+        String sql = "INSERT INTO class_enrollments (student_id, classroom_id, nickname) VALUES (?, ?, ?)";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, studentId);
             stmt.setString(2, classroomId);
+            stmt.setString(3, nickname);
             
             return stmt.executeUpdate() > 0;
         }
@@ -178,62 +180,23 @@ public class ClassroomDAO {
         }
     }
 
-    // Lấy danh sách lớp học của một người dùng
-    public List<Classroom> getClassroomsByUserId(int userId) throws SQLException {
-        List<Classroom> classrooms = new ArrayList<>();
-        String sql = "SELECT c.* FROM classrooms c " +
-                    "JOIN class_enrollments ce ON c.id = ce.classroom_id " +
-                    "WHERE ce.student_id = ?";
+    public boolean isClassroomCreator(int userId, String classroomId) throws SQLException {
+        String sql = "SELECT creator_id FROM classrooms WHERE id = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, userId);
+            stmt.setString(1, classroomId);
             
             try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    classrooms.add(mapResultSetToClassroom(rs));
+                if (rs.next()) {
+                    return rs.getInt("creator_id") == userId;
                 }
             }
         }
-        return classrooms;
+        return false;
     }
 
-    // Lấy danh sách lớp học do một người dùng tạo
-    public List<Classroom> getClassroomsByCreatorId(int creatorId) throws SQLException {
-        List<Classroom> classrooms = new ArrayList<>();
-        String sql = "SELECT * FROM classrooms WHERE creator_id = ?";
-        
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, creatorId);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    classrooms.add(mapResultSetToClassroom(rs));
-                }
-            }
-        }
-        return classrooms;
-    }
-    
-    public boolean isClassroomCreator(int userId, String classroomId) throws SQLException {
-    String sql = "SELECT creator_id FROM classrooms WHERE id = ?";
-    
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        
-        stmt.setString(1, classroomId);
-        
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return rs.getInt("creator_id") == userId;
-            }
-        }
-    }
-    return false;
-    }
     public boolean deleteClassroom(String classroomId) throws SQLException {
         Connection conn = null;
         try {
@@ -274,6 +237,40 @@ public class ClassroomDAO {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    // Lấy danh sách học sinh trong một lớp học
+    public List<ClassEnrollment> getClassEnrollments(String classroomId) throws SQLException {
+        List<ClassEnrollment> enrollments = new ArrayList<>();
+        String sql = "SELECT student_id, nickname FROM class_enrollments WHERE classroom_id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, classroomId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    enrollments.add(new ClassEnrollment(rs.getInt("student_id"), rs.getString("nickname")));
+                }
+            }
+        }
+        return enrollments;
+    }
+
+    // Cập nhật nickname của học sinh trong lớp học
+    public boolean updateStudentNickname(int studentId, String classroomId, String newNickname) throws SQLException {
+        String sql = "UPDATE class_enrollments SET nickname = ? WHERE student_id = ? AND classroom_id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, newNickname);
+            stmt.setInt(2, studentId);
+            stmt.setString(3, classroomId);
+            
+            return stmt.executeUpdate() > 0;
         }
     }
 }
