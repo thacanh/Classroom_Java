@@ -129,6 +129,7 @@
         </div>
     </c:forEach>
 </div>
+
 <script>
 function deleteClass(classId) {
     if (confirm('Bạn có chắc chắn muốn xóa lớp học này?')) {
@@ -142,14 +143,13 @@ function deleteClass(classId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Xóa lớp học thành công!');
-                location.reload(); // Tải lại trang sau khi xóa
+                alert(data.message);
+                location.reload();
             } else {
-                alert('Không thể xóa lớp học: ' + data.message);
+                alert(data.message);
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             alert('Có lỗi xảy ra khi xóa lớp học');
         });
     }

@@ -259,12 +259,9 @@
                 console.log('Server response:', data);
 
                 if (data.success) {
-                    // Đóng modal và reset form
                     closeJoinModal();
                     this.reset();
-                    // Có thể thêm thông báo thành công hoặc chuyển hướng người dùng
                     alert('Tham gia lớp học thành công!');
-                    // window.location.href = 'classroom?id=' + data.classId; // Chuyển hướng đến trang lớp học
                 } else {
                     alert(data.message || 'Có lỗi xảy ra khi tham gia lớp học!');
                 }

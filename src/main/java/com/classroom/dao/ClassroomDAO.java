@@ -273,4 +273,41 @@ public class ClassroomDAO {
             return stmt.executeUpdate() > 0;
         }
     }
+    public List<Classroom> getCreatedClassrooms(int userId) throws SQLException {
+        List<Classroom> classrooms = new ArrayList<>();
+        String sql = "SELECT * FROM classrooms WHERE creator_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    classrooms.add(mapResultSetToClassroom(rs));
+                }
+            }
+        }
+        return classrooms;
+    }
+
+    public List<Classroom> getEnrolledClassrooms(int userId) throws SQLException {
+        List<Classroom> classrooms = new ArrayList<>();
+        String sql = "SELECT c.* FROM classrooms c " +
+                    "JOIN class_enrollments e ON c.id = e.classroom_id " +
+                    "WHERE e.student_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    classrooms.add(mapResultSetToClassroom(rs));
+                }
+            }
+        }
+        return classrooms;
+    }
 }

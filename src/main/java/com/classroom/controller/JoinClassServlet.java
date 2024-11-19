@@ -31,22 +31,10 @@ public class JoinClassServlet extends HttpServlet {
         JsonObject jsonResponse = new JsonObject();
 
         try {
-            // Lấy thông tin người dùng từ session
             HttpSession session = request.getSession();
             User currentUser = (User) session.getAttribute("user");
-
-            if (currentUser == null) {
-                jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Vui lòng đăng nhập để tham gia lớp học!");
-                out.print(jsonResponse.toString());
-                return;
-            }
-
-            // Lấy mã lớp học và nickname từ request
             String classroomId = request.getParameter("classId");
             String nickname = request.getParameter("nickName");
-
-            // Kiểm tra mã lớp học
             if (classroomId == null || classroomId.trim().isEmpty()) {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Mã lớp học không hợp lệ!");
@@ -54,17 +42,22 @@ public class JoinClassServlet extends HttpServlet {
                 return;
             }
 
-            // Kiểm tra nickname
             if (nickname == null || nickname.trim().isEmpty()) {
                 jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Nickname không được để trống!");
+                jsonResponse.addProperty("message", "Biệt danh không được để trống!");
                 out.print(jsonResponse.toString());
                 return;
             }
 
-            // Kiểm tra xem lớp học có tồn tại không
             Classroom classroom = classroomDAO.getClassroomById(classroomId);
 
+            if (classroom.getCreatorId() == currentUser.getId()) {
+                jsonResponse.addProperty("success", false);
+                jsonResponse.addProperty("message", "Bạn là người tạo lớp học này!");
+                out.print(jsonResponse.toString());
+                return;
+            }
+            
             if (classroom == null) {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Không tìm thấy lớp học với mã này!");
@@ -72,7 +65,6 @@ public class JoinClassServlet extends HttpServlet {
                 return;
             }
 
-            // Kiểm tra xem người dùng đã tham gia lớp học này chưa
             if (classroomDAO.isUserInClassroom(currentUser.getId(), classroomId)) {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Bạn đã tham gia lớp học này rồi!");
@@ -80,7 +72,6 @@ public class JoinClassServlet extends HttpServlet {
                 return;
             }
 
-            // Thêm người dùng vào lớp học với nickname
             boolean success = classroomDAO.addUserToClassroom(currentUser.getId(), classroomId, nickname);
 
             if (success) {
@@ -91,7 +82,6 @@ public class JoinClassServlet extends HttpServlet {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Có lỗi xảy ra khi tham gia lớp học!");
             }
-
         } catch (Exception e) {
             jsonResponse.addProperty("success", false);
             jsonResponse.addProperty("message", "Có lỗi xảy ra: " + e.getMessage());

@@ -3,7 +3,6 @@ package com.classroom.controller;
 import com.classroom.dao.ClassroomDAO;
 import com.classroom.model.User;
 import com.google.gson.Gson;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,25 +34,17 @@ public class DeleteClassroomServlet extends HttpServlet {
             HttpSession session = request.getSession();
             User currentUser = (User) session.getAttribute("user");
             String classroomId = request.getParameter("id");
-            
-            // Kiểm tra xem người dùng có phải là người tạo lớp học không
             if (!classroomDAO.isClassroomCreator(currentUser.getId(), classroomId)) {
                 sendErrorResponse(response, "Bạn không có quyền xóa lớp học này");
                 return;
             }
-
-            // Xóa tất cả dữ liệu liên quan
             boolean success = classroomDAO.deleteClassroom(classroomId);
-
-            if (success) {
-                ResponseData responseData = new ResponseData(true, "Xóa lớp học thành công");
-                out.print(gson.toJson(responseData));
-            } else {
-                sendErrorResponse(response, "Không thể xóa lớp học");
-            }
+            ResponseData responseData = new ResponseData(success, 
+                success ? "Xóa lớp học thành công" : "Không thể xóa lớp học");
+            out.print(gson.toJson(responseData));
         } catch (SQLException e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Lỗi khi xóa lớp học: " + e.getMessage());
+            sendErrorResponse(response, e.getMessage());
         } finally {
             out.flush();
             out.close();
@@ -76,6 +67,7 @@ public class DeleteClassroomServlet extends HttpServlet {
             this.success = success;
             this.message = message;
         }
+
         public boolean isSuccess() { return success; }
         public String getMessage() { return message; }
     }

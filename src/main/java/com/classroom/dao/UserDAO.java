@@ -27,8 +27,7 @@ public class UserDAO {
                             rs.getInt("id"),
                             rs.getString("username"),
                             null, // Không lưu mật khẩu trong bộ nhớ
-                            rs.getString("email"),
-                            rs.getString("role")
+                            rs.getString("email")
                         );
                     }
                 }
@@ -55,7 +54,6 @@ public class UserDAO {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, hashedPassword);
             stmt.setString(3, user.getEmail());
-            stmt.setString(4, user.getRole());
 
             int affectedRows = stmt.executeUpdate();
             
@@ -86,9 +84,8 @@ public class UserDAO {
                     return new User(
                         rs.getInt("id"),
                         rs.getString("username"),
-                        null, // Không lưu mật khẩu trong bộ nhớ
-                        rs.getString("email"),
-                        rs.getString("role")
+                        null,
+                        rs.getString("email")
                     );
                 }
             }

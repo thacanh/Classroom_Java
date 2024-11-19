@@ -60,7 +60,7 @@
     <ul>
         <li><span>Xin chào, <strong><%= username %></strong></span></li>
         <li><a href="dashboard" class="active"><i class="material-icons">dashboard</i>Bảng điều khiển</a></li>
-        <li><a href="calendar"><i class="material-icons">calendar_today</i>Lịch</a></li>
+        <!--<li><a href="calendar"><i class="material-icons">calendar_today</i>Lịch</a></li>-->
         <li><a href="#" onclick="window.location.href='login';"><i class="material-icons">logout</i>Đăng xuất</a></li>
     </ul>
 </div>

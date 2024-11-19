@@ -33,7 +33,6 @@ public class RegisterServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
-        String role = "student"; // Default role
 
         // Validate input
         if (username == null || username.trim().isEmpty() ||
@@ -45,7 +44,7 @@ public class RegisterServlet extends HttpServlet {
         }
 
         // Create new user
-        User newUser = new User(username, password, email, role);
+        User newUser = new User(username, password, email);
 
         try {
             // Attempt to add the user

@@ -8,6 +8,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DashboardServlet extends HttpServlet {
     private ClassroomDAO classroomDAO;
@@ -29,8 +30,12 @@ public class DashboardServlet extends HttpServlet {
         }
 
         try {
-            List<Classroom> classrooms = classroomDAO.getAllClassrooms();
+            List<Classroom> classrooms = new ArrayList<>();
+            classrooms.addAll(classroomDAO.getCreatedClassrooms(user.getId()));
+            classrooms.addAll(classroomDAO.getEnrolledClassrooms(user.getId()));
+
             request.setAttribute("classrooms", classrooms);
+            
             request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();

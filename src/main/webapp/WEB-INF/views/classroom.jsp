@@ -223,14 +223,14 @@
                     <i class="material-icons">video_call</i>
                     Vào học trực tuyến
                 </button>
-                <button class="action-button secondary-button" onclick="showAnnouncement()">
+<!--                <button class="action-button primary-button" onclick="showAnnouncement()">
                     <i class="material-icons">announcement</i>
                     Tạo thông báo
                 </button>
-                <button class="action-button warning-button" onclick="showAssignment()">
+                <button class="action-button primary-button" onclick="showAssignment()">
                     <i class="material-icons">assignment</i>
                     Tạo bài tập
-                </button>
+                </button>-->
             </div>
 
             <div class="students-section">
@@ -260,18 +260,6 @@
             sidebar.classList.toggle('open');
             mainContent.classList.toggle('sidebar-open');
         });
-
-        function joinMeeting() {
-            console.log('Joining meeting...');
-        }
-
-        function showAnnouncement() {
-            console.log('Showing announcement...');
-        }
-
-        function showAssignment() {
-            console.log('Showing assignment...');
-        }
     </script>
 </body>
 </html>

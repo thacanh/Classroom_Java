@@ -37,12 +37,6 @@ public class CreateClassServlet extends HttpServlet {
         try {
             HttpSession session = request.getSession();
             User currentUser = (User) session.getAttribute("user");
-
-            if (currentUser == null) {
-                sendErrorResponse(response, "Người dùng chưa đăng nhập");
-                return;
-            }
-
             String name = request.getParameter("name");
             String subject = request.getParameter("subject");
             String description = request.getParameter("description");
