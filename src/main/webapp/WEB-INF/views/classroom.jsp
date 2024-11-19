@@ -104,64 +104,85 @@
             box-shadow: 0 1px 2px rgba(60,64,67,0.3);
         }
 
-        .info-card h3 {
-            color: #3c4043;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-        }
-
         .info-card .material-icons {
             margin-right: 8px;
             color: #1a73e8;
         }
 
-        .action-buttons {
+        .tab-menu {
             display: flex;
-            gap: 16px;
+            border-bottom: 1px solid #e0e0e0;
             margin-bottom: 24px;
+            background: white;
+            border-radius: 8px 8px 0 0;
         }
 
-        .action-button {
-            display: flex;
-            align-items: center;
-            padding: 12px 24px;
+        .tab-item {
+            padding: 16px 32px;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            background: none;
+            font-size: 16px;
             font-weight: 500;
-            transition: all 0.3s ease;
+            color: #5f6368;
+            cursor: pointer;
+            position: relative;
         }
 
-        .primary-button {
+        .tab-item.active {
+            color: #1a73e8;
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
             background-color: #1a73e8;
-            color: white;
         }
 
-        .secondary-button {
-            background-color: #34a853;
-            color: white;
+        .tab-item:hover {
+            background-color: rgba(60,64,67,0.08);
         }
 
-        .warning-button {
-            background-color: #ea4335;
-            color: white;
-        }
-
-        .action-button:hover {
-            box-shadow: 0 1px 3px rgba(60,64,67,0.3);
-            opacity: 0.9;
-        }
-
-        .action-button .material-icons {
-            margin-right: 8px;
-        }
-
-        .students-section {
+        .content-section {
+            display: none;
             background: white;
             padding: 24px;
             border-radius: 8px;
             box-shadow: 0 1px 2px rgba(60,64,67,0.3);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .board-section {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        .board-post {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 16px 0;
+        }
+
+        .board-post:last-child {
+            border-bottom: none;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 8px;
+        }
+
+        .post-content {
+            margin-top: 8px;
+            padding-left: 32px;
         }
 
         .students-list {
@@ -189,6 +210,47 @@
             align-items: center;
             justify-content: center;
             margin-right: 16px;
+        }
+
+        .student-info {
+            flex-grow: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            justify-content: flex-start;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            max-width: 200px;
+            min-width: 150px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .primary-button {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        .action-button:hover {
+            box-shadow: 0 1px 3px rgba(60,64,67,0.3);
+            opacity: 0.9;
+        }
+
+        .action-button .material-icons {
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -223,32 +285,23 @@
                     <i class="material-icons">video_call</i>
                     Vào học trực tuyến
                 </button>
-<!--                <button class="action-button primary-button" onclick="showAnnouncement()">
-                    <i class="material-icons">announcement</i>
-                    Tạo thông báo
-                </button>
-                <button class="action-button primary-button" onclick="showAssignment()">
+                <button class="action-button primary-button" onclick="Onboard()">
                     <i class="material-icons">assignment</i>
-                    Tạo bài tập
-                </button>-->
+                    Gọi lên bảng
+                </button>
             </div>
 
-            <div class="students-section">
-                <h2>Danh sách học sinh</h2>
-                <ul class="students-list">
-                    <c:forEach items="${students}" var="enrollment">
-                        <li class="student-item">
-                            <div class="student-avatar">
-                                ${enrollment.nickname.charAt(0)}
-                            </div>
-                            <div class="student-info">
-                                <strong>${enrollment.nickname}</strong>
-                                <div>ID: ${enrollment.studentId}</div>
-                            </div>
-                        </li>
-                    </c:forEach>
-                </ul>
+            <div class="tab-menu">
+                <button class="tab-item active" onclick="showBoard()">
+                    Bảng tin
+                </button>
+                <button class="tab-item" onclick="showStudentList()">
+                    Mọi người
+                </button>
             </div>
+
+            <%@ include file="board.jsp" %>
+            <%@ include file="students.jsp" %>
         </div>
     </div>
 
@@ -260,6 +313,39 @@
             sidebar.classList.toggle('open');
             mainContent.classList.toggle('sidebar-open');
         });
+
+        function hideAllSections() {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+        }
+
+        function setActiveTab(index) {
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-item')[index].classList.add('active');
+        }
+
+        function showBoard() {
+            hideAllSections();
+            document.getElementById('boardSection').classList.add('active');
+            setActiveTab(0);
+        }
+
+        function showStudentList() {
+            hideAllSections();
+            document.getElementById('studentsSection').classList.add('active');
+            setActiveTab(1);
+        }
+
+        function joinMeeting() {
+            alert('Đang kết nối đến phòng học trực tuyến...');
+        }
+
+        function Onboard() {
+            alert('Đang mở chức năng gọi lên bảng...');
+        }
     </script>
 </body>
 </html>

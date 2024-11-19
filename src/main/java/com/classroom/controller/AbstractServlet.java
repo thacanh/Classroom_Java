@@ -10,7 +10,7 @@ import java.util.List;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class DashboardServlet extends HttpServlet {
+public class AbstractServlet extends HttpServlet {
     private ClassroomDAO classroomDAO;
     
     @Override
@@ -31,7 +31,7 @@ public class DashboardServlet extends HttpServlet {
 
             request.setAttribute("classrooms", classrooms);
             
-            request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/abstract.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ServletException("Database error occurred", e);

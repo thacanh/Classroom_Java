@@ -229,7 +229,7 @@
                     // Đóng modal và reset form
                     closeModal();
                     this.reset();
-                    window.location.reload();
+                    location.reload();
                 } else {
                     alert(data.message || 'Có lỗi xảy ra khi tạo lớp học!');
                 }
@@ -262,6 +262,7 @@
                     closeJoinModal();
                     this.reset();
                     alert('Tham gia lớp học thành công!');
+                    location.reload();
                 } else {
                     alert(data.message || 'Có lỗi xảy ra khi tham gia lớp học!');
                 }
